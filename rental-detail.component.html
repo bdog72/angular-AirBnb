@@ -1,13 +1,3 @@
-<!-- <div *ngIf='rental'>
-    <p> {{rental.id}} </p>
-    <p> {{rental.title}} </p>
-    <p> {{rental.city}} </p>
-    <p> {{rental.street}} </p>
-    <p> {{rental.category}} </p>
-    <p> {{rental.description}} </p>
-    <p>$ {{rental.dailyRate}} per night</p>
-</div> -->
-
 <section id="rentalDetails" *ngIf="rental">
   <div class="upper-section">
     <div class="row">
@@ -25,10 +15,9 @@
     <div class="row">
       <div class="col-md-8">
         <div class="rental">
-          <h2 class="rental-type {{rental.category}}">{{rental.shared ? 'Shared' : 'Whole'}}
-            {{rental.category}}</h2>
+          <h2 class="rental-type {{rental.category}}">{{rental.shared}} {{rental.category}}</h2>
           <h1 class="rental-title">{{rental.title}}</h1>
-          <h2 class="rental-city">{{rental.city | ucwords}}</h2>
+          <h2 class="rental-city">{{rental.city}}</h2>
           <div class="rental-room-info">
             <span><i class="fa fa-building"></i>{{rental.bedrooms}} bedrooms</span>
             <span><i class="fa fa-user"></i> {{rental.bedrooms + 4}} guests</span>
