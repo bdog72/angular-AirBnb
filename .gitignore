@@ -44,4 +44,5 @@ testem.log
 Thumbs.db
 
 /server/config/dev.js
+/server1/config/dev.js
 /server/.vscode
