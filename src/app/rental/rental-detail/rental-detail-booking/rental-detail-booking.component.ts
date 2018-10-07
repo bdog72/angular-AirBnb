@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 // import { Rental } from '../../shared/rental.model';
+import { Booking } from '../../../booking/shared/booking.model';
 
 @Component({
   selector: 'bwm-rental-detail-booking',
@@ -9,19 +10,32 @@ import { Component, OnInit, Input } from '@angular/core';
 export class RentalDetailBookingComponent implements OnInit {
   @Input()
   price: number;
+  @Input()
+  bookings: Booking[];
 
-  constructor() {}
+  daterange: any = {};
 
-  ngOnInit() {}
-  public daterange: any = {};
-
-  public options: any = {
+  options: any = {
     locale: { format: 'YYYY-MM-DD' },
     alwaysShowCalendars: false,
     opens: 'left'
   };
 
-  public selectedDate(value: any, datepicker?: any) {
+  constructor() {}
+
+  ngOnInit() {
+    this.getBookeOutDates();
+  }
+
+  private getBookeOutDates() {
+    if (this.bookings && this.bookings.length > 0) {
+      this.bookings.forEach((booking: Booking) => {
+        console.log(booking);
+      });
+    }
+  }
+
+  selectedDate(value: any, datepicker?: any) {
     // any object can be passed to the selected event and it will be passed back here
     datepicker.start = value.start;
     datepicker.end = value.end;
