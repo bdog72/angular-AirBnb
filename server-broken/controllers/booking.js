@@ -1,12 +1,13 @@
 const Booking = require('../models/booking');
 const Rental = require('../models/rental');
+const User = require('../models/user');
+
 const { normalizeErrors } = require('../helpers/mongoose');
 const moment = require('moment');
 
 exports.createBooking = function(req, res) {
   const { startAt, endAt, totalPrice, guests, days, rental } = req.body;
   const user = res.locals.user;
-
   const booking = new Booking({ startAt, endAt, totalPrice, guests, days });
 
   Rental.findById(rental._id)
@@ -24,18 +25,32 @@ exports.createBooking = function(req, res) {
           errors: [
             {
               title: 'Invalid User!',
-              detail: 'Cannot create booking on rental that you own'
+              detail: 'Cannot create booking on your own rental'
             }
           ]
         });
       }
 
       if (isValidBooking(booking, foundRental)) {
+        booking.user = user;
+        booking.rental = foundRental;
         foundRental.bookings.push(booking);
-        foundRental.save();
-        booking.save();
 
-        return res.json({ created: true });
+        booking.save(function(err) {
+          if (err) {
+            return res.status(422).send({
+              errors: normalizeErrors(err.errors)
+            });
+          }
+          foundRental.save();
+          User.update(
+            { _id: user.id },
+            { $push: { bookings: booking } },
+            function() {}
+          );
+        });
+
+        return res.json({ startAt: booking.startAt, endAt: booking.endAt });
       } else {
         return res.status(422).send({
           errors: [
@@ -49,12 +64,10 @@ exports.createBooking = function(req, res) {
     });
 };
 
-// function isValidBooking(proposedBooking, rental) {}
-
 function isValidBooking(proposedBooking, rental) {
   let isValid = true;
 
-  if (rental.bookings && rental.bookings.length > 0) {
+  if (rental.bookings && rental.bookings > 0) {
     isValid = rental.bookings.every(function(booking) {
       const proposedStart = moment(proposedBooking.startAt);
       const proposedEnd = moment(proposedBooking.endAt);
