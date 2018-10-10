@@ -30,5 +30,5 @@ app.use('/api/v1/bookings', bookingRoutes);
 const PORT = process.env.PORT || 3001;
 
 app.listen(3001, function() {
-  console.log('I am running');
+  console.log('I am running rentals.js');
 });
